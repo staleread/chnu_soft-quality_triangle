@@ -1,78 +1,31 @@
-
-public class Triangle {
-    private double a;
-    private double b;
-    private double c;
-
-    public double takeA() {
-        return a;
+public record Triangle(double a, double b, double c) {
+    public Triangle {
+        if (a < 0 || b < 0 || c < 0) {
+            throw new IllegalArgumentException("Sides of a triangle can't be negative");
+        }
+        if (!Triangle.areValidTriangleSides(a, b, c)) {
+            throw new IllegalArgumentException("Invalid triangle sides");
+        }
     }
 
-    public void putA(double a) {
-        this.a = a;
+    private static boolean areValidTriangleSides(double a, double b, double c) {
+        var max = Math.max(a, Math.max(b, c));
+        var sum = a + b + c;
+
+        return sum - max > max;
     }
 
-    public double takeB() {
-        return b;
-    }
-
-    public void putB(double b) {
-        this.b = b;
-    }
-
-    public double takeC() {
-        return c;
-    }
-
-    public void putC(double c) {
-        this.c = c;
-    }
-
-    public Triangle(double a, double b, double c) {
-        this.a = a;
-        this.b = b;
-        this.c = c;
-    }
-
-    public Triangle() {
-    }
-
-   public double perim() {
+    public double getPerimeter() {
         return a + b + c;
-   }
-
-   public double area() {
-        return Math.sqrt(0.5*perim()*(0.5*perim()-a)*(0.5*perim()-b)*(0.5*perim()-c));
-   }
-
-   public  boolean  equilateral(){
-        if (a == b && b == c){
-            return true;
-        } else return false;
-
-   }
-
-    @Override
-    public String toString() {
-        return "Triangle{" +
-                "a=" + a +
-                ", b=" + b +
-                ", c=" + c +
-                '}';
     }
 
-    @Override
-    public final boolean equals(Object o) {
-        if (!(o instanceof Triangle triangle)) return false;
+    public double getArea() {
+        var semiPerim = getPerimeter() * 0.5;
 
-        return Double.compare(a, triangle.a) == 0 && Double.compare(b, triangle.b) == 0 && Double.compare(c, triangle.c) == 0;
+        return Math.sqrt(semiPerim * (semiPerim - a) * (semiPerim - b) * (semiPerim - c));
     }
 
-    @Override
-    public int hashCode() {
-        int result = Double.hashCode(a);
-        result = 31 * result + Double.hashCode(b);
-        result = 31 * result + Double.hashCode(c);
-        return result;
+    public boolean isEquilateral(){
+        return a == b && b == c;
     }
 }
